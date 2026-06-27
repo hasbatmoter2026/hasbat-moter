@@ -36,6 +36,8 @@
             background-color: var(--body-bg);
             color: var(--text-main);
             line-height: 1.6;
+            overflow-x: hidden;
+            overflow-y: auto !important; /* ضمان إتاحة النزول في الصفحة دائماً */
         }
 
         .container {
@@ -115,6 +117,7 @@
         .main-content {
             margin-top: -40px; /* سحب البطاقات للأعلى قليلاً لتتداخل مع الهيدر بشكل احترافي */
             margin-bottom: 60px;
+            height: auto !important;
         }
 
         .section-title {
@@ -131,6 +134,7 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* توزيع تلقائي مرن ومتساوي لـ 6 أدوات */
             gap: 24px;
             justify-content: center;
+            height: auto !important;
         }
 
         .card {
@@ -145,6 +149,8 @@
             justify-content: space-between;
             align-items: center;
             border: 1px solid rgba(0, 0, 0, 0.02);
+            width: 100%;
+            height: auto !important;
         }
 
         /* تأثير تفاعلي مميز عند مرور الماوس فوق البطاقة */
@@ -214,17 +220,24 @@
                 font-size: 15px;
             }
             .main-content {
-                margin-top: 20px; /* مسافة أمان لمنع التداخل مع الانحناء الأزرق */
+                margin-top: 20px;
+                margin-bottom: 80px; /* زيادة الهامش السفلي لإعطاء مساحة تصفح حرة في النهاية */
             }
+            /* فك قفل الشبكة تماماً ليعمل التمرير اللانهائي بكفاءة على الجوال */
             .tools {
-                grid-template-columns: 1fr; /* صف واحد مريح على الجوال */
-                gap: 20px; /* زيادة التباعد الرأسي لمنع القص والتداخل */
+                display: block !important;
+                height: auto !important;
             }
             .card {
                 padding: 24px 20px;
+                margin-bottom: 24px; /* مسافة أمان واضحة وكبيرة بين كل بطاقة والتي تليها */
+                height: auto !important;
+            }
+            .card:last-child {
+                margin-bottom: 0;
             }
             .card p {
-                min-height: auto; /* جعل الارتفاع مرناً وتلقائياً على الجوال لمنع قص البطاقة */
+                min-height: auto;
                 margin-bottom: 16px;
             }
         }
@@ -290,12 +303,3 @@
                 <h3><span>🛠️</span> جدول الصيانة الدورية</h3>
                 <p>أدخل ممشى سيارتك الحالي لتعرف كافة القطع والزيوت الواجب فحصها.</p>
                 <a href="maintenance-schedule.html" style="width: 100%; text-decoration: none;">
-                    <button style="width: 100%;">استخدم الأداة</button>
-                </a>
-            </div>
-
-            <!-- 5. بطاقة حاسبة تكلفة السفر -->
-            <div class="card">
-                <h3><span>🗺️</span> حاسبة تكلفة السفر</h3>
-                <p>احسب التكلفة المالية التقديرية للبنزين عند السفر بين المدن.</p>
-                <a href="travel-calculator.html" style="width: 100%; text-decoration: none;">
