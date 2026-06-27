@@ -32,13 +32,15 @@
             scroll-behavior: smooth; /* حركة هبوط سلسة عند الضغط على زر الأدوات */
         }
 
-        body {
+        /* حظر صارم على أي كود خارجي يحاول قفل الارتفاع أو منع النزول */
+        html, body {
             background-color: var(--body-bg) !important;
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-y: auto !important; /* السماح التام بالنزول اللانهائي */
+            color: var(--text-main) !important;
+            line-height: 1.6 !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important; /* السماح المطلق بالنزول اللانهائي */
             height: auto !important;
-            min-height: 100vh;
+            min-height: 100vh !important;
         }
 
         .container {
@@ -55,6 +57,7 @@
             padding: 20px 0 80px 0; /* مساحة سفلية ليعطي هيبة للموقع */
             border-bottom-left-radius: 32px; /* انحناء جمالي أسفل الهيدر */
             border-bottom-right-radius: 32px;
+            height: auto !important;
         }
 
         nav {
@@ -117,7 +120,7 @@
         /* --- 3. قسم الأدوات والبطاقات --- */
         .main-content {
             margin-top: -40px; /* سحب البطاقات للأعلى قليلاً لتتداخل مع الهيدر بشكل احترافي */
-            margin-bottom: 80px !important;
+            margin-bottom: 100px !important;
             height: auto !important;
             display: block !important;
         }
@@ -131,8 +134,8 @@
             position: relative;
         }
 
-        /* شبكة الأدوات للشاشات الكبيرة */
-        .tools-flex-layout {
+        /* توزيع مرن للشاشات الكبيرة */
+        .tools-scrolling-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
             gap: 24px;
@@ -224,10 +227,10 @@
             }
             .main-content {
                 margin-top: 20px !important;
-                margin-bottom: 120px !important; /* هامش مريح جداً بالأسفل لحرية التصفح */
+                margin-bottom: 140px !important; /* مساحة تصفح حرة وسفلية عملاقة للجوال */
             }
-            /* فك قفل الشبكة تماماً ليعمل التمرير اللانهائي بقوة على الجوال ويتخطى أي كاش خارجي */
-            .tools-flex-layout {
+            /* إجبار قسم البطاقات بالكامل على التدفق العمودي التلقائي والحر لمنع أي نوع من أنواع القص */
+            .tools-scrolling-container {
                 display: flex !important;
                 flex-direction: column !important;
                 gap: 24px !important;
@@ -236,6 +239,7 @@
             .card {
                 padding: 24px 20px;
                 height: auto !important;
+                display: flex !important;
             }
             .card p {
                 min-height: auto !important;
@@ -268,11 +272,11 @@
         </div>
     </header>
 
-    <!-- تم إضافة خواص تمدد حر صارمة هنا رغماً عن المتصفح والسيرفر الخارجي -->
     <main class="container main-content" style="display: block !important; height: auto !important;">
         <h2 class="section-title" id="tools-section">أدوات السيارة</h2>
 
-        <div class="tools-flex-layout" style="height: auto !important;">
+        <!-- تم تحديث اسم الكلاس بالكامل هنا كدرع حماية ضد الملفات الخارجية المعلقة -->
+        <div class="tools-scrolling-container" style="height: auto !important; display: flex; flex-direction: column;">
             <!-- 1. بطاقة حاسبة استهلاك الوقود -->
             <div class="card">
                 <h3><span>⛽</span> حاسبة استهلاك الوقود</h3>
@@ -294,11 +298,3 @@
             <!-- 3. بطاقة مقارنة الإطارات -->
             <div class="card">
                 <h3><span>🛞</span> مقارنة الإطارات</h3>
-                <p>قارن بين مقاسات الكفرات المختلفة واعرف الفروقات بسهولة.</p>
-                <a href="tyre-calculator.html" style="width: 100%; text-decoration: none;">
-                    <button style="width: 100%;">استخدم الأداة</button>
-                </a>
-            </div>
-
-            <!-- 4. بطاقة جدول الصيانة الدورية -->
-            <div class="card">
