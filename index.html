@@ -33,11 +33,12 @@
         }
 
         body {
-            background-color: var(--body-bg);
+            background-color: var(--body-bg) !important;
             color: var(--text-main);
             line-height: 1.6;
-            overflow-y: auto !important; /* السماح بالنزول اللانهائي */
+            overflow-y: auto !important; /* السماح التام بالنزول اللانهائي */
             height: auto !important;
+            min-height: 100vh;
         }
 
         .container {
@@ -116,8 +117,9 @@
         /* --- 3. قسم الأدوات والبطاقات --- */
         .main-content {
             margin-top: -40px; /* سحب البطاقات للأعلى قليلاً لتتداخل مع الهيدر بشكل احترافي */
-            margin-bottom: 60px;
+            margin-bottom: 80px !important;
             height: auto !important;
+            display: block !important;
         }
 
         .section-title {
@@ -129,8 +131,8 @@
             position: relative;
         }
 
-        /* قمنا بتحديث اسم الكلاس هنا لكسر كاش السيرفر تماماً */
-        .tools-list-container {
+        /* شبكة الأدوات للشاشات الكبيرة */
+        .tools-flex-layout {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
             gap: 24px;
@@ -221,11 +223,11 @@
                 font-size: 15px;
             }
             .main-content {
-                margin-top: 20px;
-                margin-bottom: 100px; /* هامش مريح جداً بالأسفل */
+                margin-top: 20px !important;
+                margin-bottom: 120px !important; /* هامش مريح جداً بالأسفل لحرية التصفح */
             }
-            /* تحويل التوزيع إلى قائمة تدفق حر عمودي 100% لإظهار الـ 6 أدوات دون قص */
-            .tools-list-container {
+            /* فك قفل الشبكة تماماً ليعمل التمرير اللانهائي بقوة على الجوال ويتخطى أي كاش خارجي */
+            .tools-flex-layout {
                 display: flex !important;
                 flex-direction: column !important;
                 gap: 24px !important;
@@ -236,7 +238,7 @@
                 height: auto !important;
             }
             .card p {
-                min-height: auto;
+                min-height: auto !important;
                 margin-bottom: 16px;
             }
         }
@@ -266,11 +268,11 @@
         </div>
     </header>
 
-    <main class="container main-content">
+    <!-- تم إضافة خواص تمدد حر صارمة هنا رغماً عن المتصفح والسيرفر الخارجي -->
+    <main class="container main-content" style="display: block !important; height: auto !important;">
         <h2 class="section-title" id="tools-section">أدوات السيارة</h2>
 
-        <!-- تم تحديث اسم الكلاس هنا لضمان فك أي تعليق في السيرفر -->
-        <div class="tools-list-container">
+        <div class="tools-flex-layout" style="height: auto !important;">
             <!-- 1. بطاقة حاسبة استهلاك الوقود -->
             <div class="card">
                 <h3><span>⛽</span> حاسبة استهلاك الوقود</h3>
@@ -300,6 +302,3 @@
 
             <!-- 4. بطاقة جدول الصيانة الدورية -->
             <div class="card">
-                <h3><span>🛠️</span> جدول الصيانة الدورية</h3>
-                <p>أدخل ممشى سيارتك الحالي لتعرف كافة القطع والزيوت الواجب فحصها.</p>
-                <a href="maintenance-schedule.html" style="width: 100%; text-decoration: none;">
