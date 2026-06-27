@@ -214,14 +214,18 @@
                 font-size: 15px;
             }
             .main-content {
-                margin-top: 20px; /* تم تصحيح المساحة هنا لمنع تداخل النص مع الانحناء الأزرق على الجوال */
+                margin-top: 20px; /* مسافة أمان لمنع التداخل مع الانحناء الأزرق */
             }
             .tools {
                 grid-template-columns: 1fr; /* صف واحد مريح على الجوال */
-                gap: 16px;
+                gap: 20px; /* زيادة التباعد الرأسي لمنع القص والتداخل */
             }
             .card {
                 padding: 24px 20px;
+            }
+            .card p {
+                min-height: auto; /* جعل الارتفاع مرناً وتلقائياً على الجوال لمنع قص البطاقة */
+                margin-bottom: 16px;
             }
         }
     </style>
@@ -295,9 +299,3 @@
                 <h3><span>🗺️</span> حاسبة تكلفة السفر</h3>
                 <p>احسب التكلفة المالية التقديرية للبنزين عند السفر بين المدن.</p>
                 <a href="travel-calculator.html" style="width: 100%; text-decoration: none;">
-                    <button style="width: 100%;">استخدم الأداة</button>
-                </a>
-            </div>
-
-            <!-- 6. بطاقة محول استهلاك الوقود -->
-            <div class="card card-last-updated">
