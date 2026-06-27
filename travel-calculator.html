@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة تكلفة السفر بين المدن | حسبة موتر</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --primary-hover: #0052a3;
+            --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --card-bg: #ffffff;
+            --body-bg: #f7fafc;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --success-color: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: var(--bg-gradient);
+            color: #ffffff;
+            padding: 24px 0 60px 0;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            text-align: center;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.15);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .back-btn:hover { background-color: rgba(255, 255, 255, 0.25); transform: translateX(4px); }
+
+        header h1 { font-size: 26px; font-weight: 900; }
+        header h1 span { color: #38bdf8; }
+
+        .calculator-box {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            box-shadow: var(--shadow);
+            margin-top: -30px;
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #4a5568;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-align: right;
+        }
+
+        .form-group input:focus { border-color: var(--primary-color); }
+
+        .calc-btn {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+        .calc-btn:hover { background-color: var(--primary-hover); }
+
+        .results-box {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 2px dashed #edf2f7;
+            display: none;
+        }
+
+        .result-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .result-card h4 {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .result-card .value {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--primary-color);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <a href="index.html" class="back-btn"><span>◀</span> العودة للرئيسية</a>
+            <h1>حاسبة تكلفة <span>السفر</span></h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="calculator-box">
+            
+            <div class="form-group">
+                <label for="travelDistance">مسافة السفر الإجمالية (كم):</label>
+                <input type="number" id="travelDistance" inputmode="decimal" placeholder="مثال: 950 (الرياض إلى جدة)">
+            </div>
+
+            <div class="form-group">
+                <label for="carConsumption">معدل استهلاك سيارتك (لتر لكل 100 كم):</label>
+                <input type="number" id="carConsumption" inputmode="decimal" placeholder="مثال: 8.0" step="0.1">
+            </div>
+
+            <div class="form-group">
+                <label for="fuelSelect">نوع البنزين المستخدم:</label>
+                <select id="fuelSelect">
+                    <option value="2.18">بنزين 91 (2.18 ريال/لتر)</option>
+                    <option value="2.33">بنزين 95 (2.33 ريال/لتر)</option>
+                    <option value="0.75">ديزل (0.75 ريال/لتر)</option>
+                </select>
+            </div>
+
+            <button class="calc-btn" onclick="calculateTravelCost()">احسب ميزانية السفر 🗺️</button>
+
+            <div class="results-box" id="results">
+                
+                <div class="result-card" style="background-color: #f0fdf4; border-color: #bbf7d0;">
+                    <h4>تكلفة البنزين المقدرة للرحلة:</h4>
+                    <div class="value" id="costValue" style="color: var(--success-color);">0 ريال</div>
+                </div>
+
+                <div class="result-card">
+                    <h4>الوقود المطلوب لقطع المسافة:</h4>
+                    <div class="value" id="litersValue">0 لتر</div>
+                </div>
+
+                <div class="result-card" style="background-color: #eff6ff; border-color: #bfdbfe;">
+                    <h4>زمن القيادة التقريبي (سرعة 120 كم/س):</h4>
+                    <div class="value" id="timeValue" style="color: var(--primary-color);">0 ساعة</div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        function calculateTravelCost() {
+            const distance = parseFloat(document.getElementById('travelDistance').value);
+            const consumption = parseFloat(document.getElementById('carConsumption').value);
+            const fuelPrice = parseFloat(document.getElementById('fuelSelect').value);
+
+            if (isNaN(distance) || isNaN(consumption) || distance <= 0 || consumption <= 0) {
+                alert("الرجاء إدخال بيانات صحيحة في الخانات");
+                return;
+            }
+
+            // الحسبة الرياضية الذكية
+            const totalLiters = (distance / 100) * consumption;
+            const totalCost = totalLiters * fuelPrice;
+            const travelTimeHours = distance / 120; // حساب الوقت على سرعة خط 120 كم/ساعة
+
+            // عرض النتائج مع تنسيق ناعم ومقرب لخانة عشرية واحدة
+            document.getElementById('costValue').innerText = totalCost.toFixed(1) + " ريال سعودي";
+            document.getElementById('litersValue').innerText = totalLiters.toFixed(1) + " لتر";
+            
+            // تحويل الوقت بشكل مقروء ومفهوم (ساعات ودقائق)
+            const hours = Math.floor(travelTimeHours);
+            const minutes = Math.round((travelTimeHours - hours) * 60);
+            if (minutes > 0) {
+                document.getElementById('timeValue').innerText = hours + " ساعة و " + minutes + " دقيقة";
+            } else {
+                document.getElementById('timeValue').innerText = hours + " ساعة ";
+            }
+
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>

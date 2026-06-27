@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة استهلاك الوقود | حسبة موتر</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --primary-hover: #0052a3;
+            --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --card-bg: #ffffff;
+            --body-bg: #f7fafc;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --success-color: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: var(--bg-gradient);
+            color: #ffffff;
+            padding: 24px 0 60px 0;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            text-align: center;
+        }
+
+        /* تنسيق زر العودة الاحترافي والتفاعلي الجديد */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.15);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-btn:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: translateX(4px);
+        }
+
+        .back-btn span {
+            font-size: 11px;
+        }
+
+        header h1 { font-size: 26px; font-weight: 900; }
+        header h1 span { color: #38bdf8; }
+
+        .calculator-box {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            box-shadow: var(--shadow);
+            margin-top: -30px;
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #4a5568;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-align: right;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .calc-btn {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        .calc-btn:hover { background-color: var(--primary-hover); }
+
+        .results-box {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 2px dashed #edf2f7;
+            display: none;
+        }
+
+        .result-card {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .result-card h4 {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .result-card .value {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--success-color);
+            margin-top: 4px;
+        }
+
+        .result-card .unit {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <!-- الزر المطور والمربوط بـ index.html مباشرة -->
+            <a href="index.html" class="back-btn">
+                <span>◀</span> العودة للرئيسية
+            </a>
+            <h1>حاسبة استهلاك <span>الوقود</span></h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="calculator-box">
+            
+            <div class="form-group">
+                <label for="distance">المسافة المراد قطعها (كيلومتر):</label>
+                <input type="number" id="distance" inputmode="decimal" placeholder="مثال: 400" min="1">
+            </div>
+
+            <div class="form-group">
+                <label for="consumption">معدل استهلاك سيارتك (لتر لكل 100 كم):</label>
+                <input type="number" id="consumption" inputmode="decimal" placeholder="مثال: 8.5" step="0.1" min="1">
+            </div>
+
+            <div class="form-group">
+                <label for="fuelType">نوع وقود السيارة:</label>
+                <select id="fuelType">
+                    <option value="2.18">بنزين 91 (2.18 ريال/لتر)</option>
+                    <option value="2.33">بنزين 95 (2.33 ريال/لتر)</option>
+                    <option value="0.75">ديزل (0.75 ريال/لتر)</option>
+                </select>
+            </div>
+
+            <button class="calc-btn" onclick="calculateFuel()">احسب الحسبة 🚀</button>
+
+            <div class="results-box" id="results">
+                
+                <div class="result-card">
+                    <h4>الوقود المطلوب للرحلة</h4>
+                    <div class="value" id="litersResult">0</div>
+                    <div class="unit">لتر بنزين</div>
+                </div>
+
+                <div class="result-card" style="background-color: #eff6ff; border-color: #bfdbfe;">
+                    <h4>التكلفة المادية التقديرية</h4>
+                    <div class="value" id="costResult" style="color: var(--primary-color);">0</div>
+                    <div class="unit">ريال سعودي</div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        function calculateFuel() {
+            const distance = parseFloat(document.getElementById('distance').value);
+            const consumption = parseFloat(document.getElementById('consumption').value);
+            const fuelPrice = parseFloat(document.getElementById('fuelType').value);
+
+            if (isNaN(distance) || isNaN(consumption) || distance <= 0 || consumption <= 0) {
+                alert("الرجاء إدخال قيم صحيحة في الخانات");
+                return;
+            }
+
+            const totalLiters = (distance / 100) * consumption;
+            const totalCost = totalLiters * fuelPrice;
+
+            document.getElementById('litersResult').innerText = totalLiters.toFixed(1);
+            document.getElementById('costResult').innerText = totalCost.toFixed(1);
+
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
