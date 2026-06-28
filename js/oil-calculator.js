@@ -2,40 +2,45 @@ function calculateOil() {
     const currentKm = parseFloat(document.getElementById("currentKm").value);
     const lastOilKm = parseFloat(document.getElementById("lastOilKm").value);
     let oilInterval = parseInt(document.getElementById("oilType").value);
-    const usage = document.getElementById("usage").value;
+    const usageType = document.getElementById("usage").value;
 
     if (!currentKm || !lastOilKm || currentKm <= 0 || lastOilKm <= 0) {
-        alert("يرجى إدخال جميع البيانات بشكل صحيح.");
+        alert("فضلاً أدخل جميع البيانات بشكل صحيح.");
         return;
     }
 
-    if (usage === "hard") {
+    if (currentKm < lastOilKm) {
+        alert("الممشى الحالي يجب أن يكون أكبر من ممشى آخر تغيير زيت.");
+        return;
+    }
+
+    if (usageType === "hard") {
         oilInterval -= 1000;
     }
 
     const nextChange = lastOilKm + oilInterval;
     const remaining = nextChange - currentKm;
 
+    let remainingText = "";
     let status = "";
     let advice = "";
-    let remainingText = "";
 
     if (remaining > 2000) {
-        status = "🟢 الزيت بحالة ممتازة";
+        remainingText = "متبقي " + remaining.toLocaleString() + " كم";
+        status = "🟢 الزيت بحالة جيدة";
         advice = "استمر في القيادة وافحص مستوى الزيت دوريًا.";
-        remainingText = remaining.toLocaleString() + " كم";
     } else if (remaining > 500) {
+        remainingText = "متبقي " + remaining.toLocaleString() + " كم";
         status = "🟡 اقترب موعد التغيير";
-        advice = "جهز لتغيير الزيت خلال الفترة القادمة.";
-        remainingText = remaining.toLocaleString() + " كم";
+        advice = "جهز لتغيير الزيت قريبًا.";
     } else if (remaining >= 0) {
-        status = "🟠 يجب تغيير الزيت قريبًا";
-        advice = "لا تؤجل تغيير الزيت للحفاظ على المحرك.";
-        remainingText = remaining.toLocaleString() + " كم";
+        remainingText = "متبقي " + remaining.toLocaleString() + " كم";
+        status = "🟠 غيّر الزيت قريبًا";
+        advice = "يفضل عدم تأخير تغيير الزيت.";
     } else {
-        status = "🔴 متأخر عن تغيير الزيت";
-        advice = "يجب تغيير الزيت فورًا لتجنب أضرار للمحرك.";
         remainingText = "متأخر بـ " + Math.abs(remaining).toLocaleString() + " كم";
+        status = "🔴 متأخر عن تغيير الزيت";
+        advice = "غيّر الزيت في أقرب وقت لتجنب ضرر المحرك.";
     }
 
     document.getElementById("nextChange").textContent = nextChange.toLocaleString() + " كم";
@@ -58,8 +63,8 @@ function copyOilResult() {
     const text =
 `نتائج حاسبة تغيير الزيت:
 موعد التغيير القادم: ${document.getElementById("nextChange").textContent}
-المتبقي: ${document.getElementById("remainingKm").textContent}
-الحالة: ${document.getElementById("oilStatus").textContent}
+الحالة الحالية: ${document.getElementById("remainingKm").textContent}
+تقييم الحالة: ${document.getElementById("oilStatus").textContent}
 التوصية: ${document.getElementById("oilAdvice").textContent}`;
 
     navigator.clipboard.writeText(text);
