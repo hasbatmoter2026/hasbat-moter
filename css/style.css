@@ -191,17 +191,18 @@ a{
     padding:25px;
     text-align:center;
 }
-
 @media(max-width:768px){
     .navbar{
         flex-direction:column;
+        gap:18px;
     }
 
     .nav-links{
-    flex-direction:row;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:14px;
+        display:grid !important;
+        grid-template-columns:repeat(4, auto);
+        justify-content:center;
+        gap:12px 18px;
+        width:100%;
     }
 
     .hero h1{
@@ -224,16 +225,6 @@ a{
 
     .section-title{
         font-size:28px;
-    }
-}@media(max-width:768px){
-    .nav-links{
-        display:flex !important;
-        flex-direction:row !important;
-        flex-wrap:wrap !important;
-        justify-content:center !important;
-        gap:14px !important;
-        text-align:center !important;
-        width:100%;
     }
 
     .nav-links li{
