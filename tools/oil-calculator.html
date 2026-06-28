@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حاسبة تغيير الزيت | حسبة موتر</title>
+<link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body>
+
+<div class="tool-page">
+
+<div class="breadcrumb">
+<a href="../index.html">🏠 الرئيسية</a>
+<span>›</span>
+<span>الأدوات</span>
+<span>›</span>
+<strong>حاسبة تغيير الزيت</strong>
+</div>
+
+<h1>🛢️ حاسبة تغيير الزيت</h1>
+
+<p class="tool-desc">اعرف موعد تغيير زيت المحرك القادم بسهولة حسب ممشى السيارة.</p>
+
+<div class="form-grid">
+<div class="form-group">
+<label>الممشى الحالي (كم)</label>
+<input type="number" id="currentKm" placeholder="مثال: 85000">
+</div>
+
+<div class="form-group">
+<label>الممشى عند آخر تغيير الزيت</label>
+<input type="number" id="lastOilKm" placeholder="مثال: 78000">
+</div>
+
+<div class="form-group">
+<label>نوع الزيت</label>
+<select id="oilType">
+<option value="5000">معدني (5000 كم)</option>
+<option value="7000">شبه تخليقي (7000 كم)</option>
+<option value="10000">تخليقي (10000 كم)</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>نوع الاستخدام</label>
+<select id="usage">
+<option value="normal">استخدام عادي</option>
+<option value="hard">استخدام شاق</option>
+</select>
+</div>
+</div>
+
+<button class="calc-btn" onclick="calculateOil()">احسب موعد التغيير</button>
+
+<div class="result" id="result">
+<div class="result-grid">
+<div class="result-card"><span>📍 موعد التغيير القادم</span><strong id="nextChange"></strong></div>
+<div class="result-card"><span>📏 الحالة الحالية</span><strong id="remainingKm"></strong></div>
+<div class="result-card"><span>⚠️ الحالة</span><strong id="oilStatus"></strong></div>
+<div class="result-card"><span>💡 التوصية</span><strong id="oilAdvice"></strong></div>
+</div>
+
+<div class="actions">
+<button class="copy-btn" onclick="copyOilResult()">نسخ النتائج</button>
+<button class="print-btn" onclick="window.print()">طباعة</button>
+<button class="reset-btn" onclick="resetOilCalc()">إعادة الحساب</button>
+</div>
+</div>
+
+<div class="info-box">
+<h2>كيف تقرأ النتائج؟</h2>
+<ul>
+<li>إذا كان المتبقي أكثر من 2000 كم فالزيت بحالة جيدة.</li>
+<li>إذا اقترب المتبقي من 500 كم فجهز لتغيير الزيت.</li>
+<li>إذا ظهرت نتيجة متأخر، فهذا يعني أنك تجاوزت موعد التغيير.</li>
+<li>الاستخدام الشاق يقلل مدة تغيير الزيت.</li>
+</ul>
+</div>
+
+</div>
+
+<script src="../js/oil-calculator.js"></script>
+</body>
+</html>
