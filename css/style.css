@@ -325,3 +325,36 @@ a{
         line-height:1.5 !important;
     }
 }
+@media screen and (max-width:768px){
+
+    .navbar{
+        flex-direction:row !important;
+        justify-content:center !important;
+        align-items:center !important;
+        flex-wrap:wrap !important;
+        gap:18px !important;
+    }
+
+    .logo{
+        width:100% !important;
+        text-align:center !important;
+        font-size:24px !important;
+    }
+
+    .nav-links{
+        width:100% !important;
+        display:flex !important;
+        flex-direction:row !important;
+        justify-content:center !important;
+        align-items:center !important;
+        flex-wrap:wrap !important;
+        gap:18px !important;
+        margin:0 !important;
+        padding:0 !important;
+    }
+
+    .hero{
+        margin-top:40px !important;
+    }
+
+}
