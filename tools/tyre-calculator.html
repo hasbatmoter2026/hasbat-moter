@@ -1,1 +1,146 @@
-<!DOCTYPE html><html lang='ar' dir='rtl'><meta charset='UTF-8'><title>مقارنة الإطارات</title><link rel='stylesheet' href='../css/style.css'><body><header><h1>مقارنة الإطارات</h1></header></body></html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقارنة مقاسات الإطارات | حسبة موتر</title>
+    <meta name="description" content="قارن بين مقاس الإطار الحالي والجديد واعرف فرق القطر والمحيط وتأثيره على عداد السرعة وارتفاع السيارة.">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<main class="tool-page">
+
+    <section class="tool-box">
+
+        <div class="breadcrumb">
+            <a href="../index.html">🏠 الرئيسية</a>
+            <span>›</span>
+            <a href="../index.html#tools">الأدوات</a>
+            <span>›</span>
+            <strong>مقارنة مقاسات الإطارات</strong>
+        </div>
+
+        <h1>🛞 مقارنة مقاسات الإطارات</h1>
+
+        <p class="tool-desc">
+            قارن بين مقاس الإطار الحالي والمقاس الجديد واعرف الفرق وتأثيره على السيارة.
+        </p>
+
+        <h2>الإطار الحالي</h2>
+
+        <div class="form-grid tyre-grid">
+            <div class="form-group">
+                <label>العرض</label>
+                <input type="number" id="oldWidth" placeholder="مثال: 205">
+            </div>
+
+            <div class="form-group">
+                <label>النسبة</label>
+                <input type="number" id="oldRatio" placeholder="مثال: 55">
+            </div>
+
+            <div class="form-group">
+                <label>مقاس الجنط</label>
+                <input type="number" id="oldRim" placeholder="مثال: 16">
+            </div>
+        </div>
+
+        <h2 style="margin-top:30px;">الإطار الجديد</h2>
+
+        <div class="form-grid tyre-grid">
+            <div class="form-group">
+                <label>العرض</label>
+                <input type="number" id="newWidth" placeholder="مثال: 215">
+            </div>
+
+            <div class="form-group">
+                <label>النسبة</label>
+                <input type="number" id="newRatio" placeholder="مثال: 55">
+            </div>
+
+            <div class="form-group">
+                <label>مقاس الجنط</label>
+                <input type="number" id="newRim" placeholder="مثال: 16">
+            </div>
+        </div>
+
+        <button class="calc-btn" onclick="compareTyres()">قارن المقاسين</button>
+
+        <div class="result" id="result">
+
+            <div class="result-grid">
+
+                <div class="result-card">
+                    <span>📏 فرق القطر</span>
+                    <strong id="diameterDiff"></strong>
+                </div>
+
+                <div class="result-card">
+                    <span>📐 فرق المحيط</span>
+                    <strong id="circumferenceDiff"></strong>
+                </div>
+
+                <div class="result-card">
+                    <span>🚗 فرق ارتفاع السيارة</span>
+                    <strong id="heightDiff"></strong>
+                </div>
+
+                <div class="result-card">
+                    <span>⚠️ تأثير العداد</span>
+                    <strong id="speedEffect"></strong>
+                </div>
+
+                <div class="result-card">
+                    <span>📊 نسبة الفرق</span>
+                    <strong id="percentDiff"></strong>
+                </div>
+
+                <div class="result-card">
+                    <span>💡 التوصية</span>
+                    <strong id="tyreAdvice"></strong>
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <button class="copy-btn" onclick="copyTyreResult()">نسخ النتائج</button>
+                <button class="print-btn" onclick="window.print()">طباعة</button>
+                <button class="reset-btn" onclick="resetTyreCalc()">إعادة الحساب</button>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="info-box">
+        <h2>كيف تستخدم أداة مقارنة الإطارات؟</h2>
+        <ul>
+            <li>أدخل مقاس الإطار الحالي مثل: 205 / 55 / 16.</li>
+            <li>أدخل المقاس الجديد الذي تريد تركيبه.</li>
+            <li>اضغط قارن المقاسين لمعرفة الفرق.</li>
+            <li>يفضل أن يكون فرق القطر أقل من 3% لتقليل تأثيره على العداد.</li>
+        </ul>
+    </section>
+
+    <section class="info-box">
+        <h2>أسئلة شائعة</h2>
+
+        <h3>هل تغيير مقاس الإطار يؤثر على عداد السرعة؟</h3>
+        <p>نعم، إذا اختلف القطر الكلي للإطار فقد يظهر عداد السرعة قراءة أعلى أو أقل من السرعة الفعلية.</p>
+
+        <h3>ما النسبة الآمنة لتغيير مقاس الإطار؟</h3>
+        <p>يفضل غالبًا ألا يتجاوز الفرق بين المقاس القديم والجديد حوالي 3%.</p>
+
+        <h3>هل تغيير مقاس الجنط يؤثر على الراحة؟</h3>
+        <p>نعم، الجنط الأكبر مع جدار إطار أقل قد يقلل الراحة ويزيد الإحساس بالمطبات.</p>
+    </section>
+
+</main>
+
+<script src="../js/tyre-calculator.js"></script>
+
+</body>
+</html>

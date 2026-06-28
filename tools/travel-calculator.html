@@ -1,1 +1,114 @@
-<!DOCTYPE html><html lang='ar' dir='rtl'><meta charset='UTF-8'><title>حاسبة السفر</title><link rel='stylesheet' href='../css/style.css'><body><header><h1>حاسبة السفر</h1></header></body></html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة تكلفة السفر | حسبة موتر</title>
+    <meta name="description" content="احسب تكلفة البنزين قبل السفر حسب المسافة واستهلاك السيارة وسعر الوقود.">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<main class="tool-page">
+
+    <section class="tool-box">
+
+        <div class="breadcrumb">
+            <a href="../index.html">🏠 الرئيسية</a>
+            <span>›</span>
+            <a href="../index.html#tools">الأدوات</a>
+            <span>›</span>
+            <strong>حاسبة تكلفة السفر</strong>
+        </div>
+
+        <h1>🗺️ حاسبة تكلفة السفر</h1>
+
+        <p class="tool-desc">
+            احسب تكلفة البنزين المتوقعة قبل السفر بناءً على المسافة واستهلاك السيارة.
+        </p>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>مسافة الرحلة (كم)</label>
+                <input type="number" id="distance" placeholder="مثال: 500">
+            </div>
+
+            <div class="form-group">
+                <label>استهلاك السيارة (كم/لتر)</label>
+                <input type="number" id="consumption" placeholder="مثال: 12">
+            </div>
+
+            <div class="form-group">
+                <label>سعر لتر البنزين</label>
+                <input type="number" id="fuelPrice" placeholder="مثال: 2.33">
+            </div>
+
+            <div class="form-group">
+                <label>العملة</label>
+                <select id="currency">
+                    <option value="ريال">ريال سعودي</option>
+                    <option value="درهم">درهم إماراتي</option>
+                    <option value="دينار">دينار كويتي</option>
+                    <option value="دولار">دولار</option>
+                </select>
+            </div>
+
+        </div>
+
+        <button class="calc-btn" onclick="calculateTravel()">احسب تكلفة السفر</button>
+
+        <div class="result" id="result">
+
+          <div class="result-grid">
+
+    <div class="result-card">
+        <span>⛽ الوقود المطلوب</span>
+        <strong id="neededFuel"></strong>
+    </div>
+
+    <div class="result-card">
+        <span>💰 تكلفة الوقود</span>
+        <strong id="totalCost"></strong>
+    </div>
+
+    <div class="result-card">
+        <span>📊 تكلفة كل 100 كم</span>
+        <strong id="costPer100"></strong>
+    </div>
+
+    <div class="result-card">
+        <span>💡 التوصية</span>
+        <strong id="travelAdvice"></strong>
+    </div>
+
+            </div>
+
+            <div class="actions">
+                <button class="copy-btn" onclick="copyTravelResult()">نسخ النتائج</button>
+                <button class="print-btn" onclick="window.print()">طباعة</button>
+                <button class="reset-btn" onclick="resetTravelCalc()">إعادة الحساب</button>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="info-box">
+        <h2>كيف تستخدم حاسبة تكلفة السفر؟</h2>
+        <ul>
+            <li>أدخل مسافة الرحلة بالكيلومترات.</li>
+            <li>أدخل استهلاك سيارتك بالكيلومتر لكل لتر.</li>
+            <li>أدخل سعر لتر البنزين.</li>
+            <li>اضغط احسب لمعرفة التكلفة التقريبية للرحلة.</li>
+        </ul>
+    </section>
+
+</main>
+
+<script src="../js/travel-calculator.js"></script>
+
+</body>
+</html>

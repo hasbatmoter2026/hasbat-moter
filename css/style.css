@@ -387,3 +387,63 @@ a{
         flex-direction:column;
     }
 }
+/* تحسين عرض أدوات الموقع على الكمبيوتر فقط */
+@media (min-width: 1024px){
+
+    .tool-page{
+        max-width: 900px;
+        margin: 20px auto;
+    }
+
+    .tool-box{
+        padding: 25px;
+    }
+
+    .tool-page h1{
+        font-size: 34px;
+        margin-bottom: 8px;
+    }
+
+    .tool-desc{
+        margin-bottom: 20px;
+    }
+
+    .form-grid{
+        gap: 14px;
+    }
+
+    .form-group label{
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select{
+        padding: 11px;
+    }
+
+    .calc-btn{
+        padding: 14px;
+        margin-top: 18px;
+    }
+
+    .result{
+        margin-top: 20px;
+    }
+
+    .result-card{
+        padding: 18px;
+    }
+
+    .result-card strong{
+        font-size: 20px;
+    }
+
+    .actions{
+        margin-top: 18px;
+    }
+
+    .info-box{
+        margin-top: 20px;
+        padding: 24px;
+    }
+}
