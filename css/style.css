@@ -226,3 +226,58 @@ a{
         font-size:28px;
     }
 }
+@media (max-width:768px){
+
+    .site-header{
+        padding:20px 0 60px;
+    }
+
+    .navbar{
+        flex-direction:column;
+        gap:16px;
+    }
+
+    .logo{
+        font-size:24px;
+    }
+
+    .nav-links{
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:14px;
+        padding:0;
+    }
+
+    .hero{
+        margin-top:45px;
+    }
+
+    .hero h1{
+        font-size:28px;
+        line-height:1.5;
+    }
+
+    .hero p{
+        font-size:16px;
+    }
+
+    .hero-actions{
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .btn{
+        width:100%;
+        max-width:280px;
+        text-align:center;
+    }
+
+    .search-section{
+        margin-top:-30px;
+    }
+
+    .search-section .container{
+        padding:25px;
+    }
+}
