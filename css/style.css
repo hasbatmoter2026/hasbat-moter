@@ -36,7 +36,7 @@ a{
 }
 
 .logo{
-    font-size:28px;
+    font-size:24px;
     font-weight:900;
 }
 
@@ -48,11 +48,9 @@ a{
 
 .nav-links a{
     font-weight:700;
-}
-
 .hero{
     text-align:center;
-    margin-top:75px;
+    margin-top:45px;
 }
 
 .hero h1{
@@ -203,11 +201,10 @@ a{
         justify-content:center;
         gap:12px 18px;
         width:100%;
-    }
-
-    .hero h1{
-        font-size:32px;
-    }
+   .hero h1{
+    font-size:26px;
+    line-height:1.4;
+}
 
     .hero p{
         font-size:16px;
