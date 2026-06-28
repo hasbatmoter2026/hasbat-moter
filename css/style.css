@@ -323,22 +323,11 @@ a{
     box-shadow:0 10px 30px rgba(0,0,0,.06);
 }
 
-@media(max-width:768px){
+/* ================= الجوال ================= */
 
-    .form-grid,
-    .result-grid{
-        grid-template-columns:1fr;
-    }
-
-    .tool-box{
-        padding:22px;
-    }
-
-    .actions{
-        flex-direction:column;
-    }
-}
 @media screen and (max-width:768px){
+
+    /* الصفحة الرئيسية */
 
     .navbar{
         display:flex;
@@ -366,5 +355,35 @@ a{
     .nav-links a{
         font-size:14px;
         white-space:nowrap;
+    }
+
+    /* تعديل الجوال فقط */
+    .hero{
+        margin-top:40px;
+    }
+
+    .hero h1{
+        font-size:38px;
+        line-height:1.4;
+        margin-bottom:15px;
+    }
+
+    .hero p{
+        font-size:18px;
+    }
+
+    /* صفحات الأدوات */
+
+    .form-grid,
+    .result-grid{
+        grid-template-columns:1fr;
+    }
+
+    .tool-box{
+        padding:22px;
+    }
+
+    .actions{
+        flex-direction:column;
     }
 }
