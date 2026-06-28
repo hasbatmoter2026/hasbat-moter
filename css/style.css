@@ -198,9 +198,10 @@ a{
     }
 
     .nav-links{
-        flex-direction:column;
-        text-align:center;
-        gap:12px;
+    flex-direction:row;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:14px;
     }
 
     .hero h1{
@@ -219,7 +220,6 @@ a{
     .btn{
         width:100%;
         max-width:280px;
-        text-align:center;
     }
 
     .section-title{
