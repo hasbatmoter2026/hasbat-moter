@@ -464,11 +464,14 @@
             return;
         }
 
-        selection = {
-            xRatio: (boxRect.left - layerRect.left) / layerRect.width,
-            yRatio: (boxRect.top - layerRect.top) / layerRect.height,
-            widthRatio: width / layerRect.width,
-            heightRatio: height / layerRect.height
+       const videoRect = sourceVideo.getBoundingClientRect();
+
+selection = {
+    xRatio: (boxRect.left - videoRect.left) / videoRect.width,
+    yRatio: (boxRect.top - videoRect.top) / videoRect.height,
+    widthRatio: width / videoRect.width,
+    heightRatio: height / videoRect.height
+};
         };
 
         processButton.disabled = false;
