@@ -1,782 +1,617 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تمويه جزء من الفيديو</title>
 
-    <title>تمويه جزء من الفيديو</title>
+  <style>
+    * { box-sizing: border-box; }
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: #f3f5f8;
+      color: #172033;
+    }
 
-        body {
-            margin: 0;
-            padding: 25px;
-            font-family: Arial, sans-serif;
-            background: #f3f5f8;
-            color: #172033;
-        }
+    .container {
+      width: 100%;
+      max-width: 980px;
+      margin: auto;
+      padding: 28px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.10);
+    }
 
-        .container {
-            width: 100%;
-            max-width: 950px;
-            margin: auto;
-            padding: 28px;
-            background: white;
-            border-radius: 18px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
-        }
+    h1 {
+      margin: 0 0 10px;
+      text-align: center;
+    }
 
-        h1 {
-            margin-top: 0;
-            text-align: center;
-        }
+    .description {
+      text-align: center;
+      line-height: 1.8;
+      color: #596275;
+    }
 
-        .description {
-            text-align: center;
-            line-height: 1.8;
-            color: #596275;
-        }
+    .upload-box {
+      margin: 24px 0;
+      padding: 24px;
+      text-align: center;
+      border: 2px dashed #1769ff;
+      border-radius: 14px;
+      background: #f7faff;
+    }
 
-        .upload-box {
-            margin: 25px 0;
-            padding: 25px;
-            text-align: center;
-            border: 2px dashed #1769ff;
-            border-radius: 14px;
-            background: #f7faff;
-        }
+    .upload-box input { max-width: 100%; }
 
-        .upload-box input {
-            max-width: 100%;
-        }
+    .instructions {
+      display: none;
+      margin: 16px 0;
+      padding: 14px;
+      text-align: center;
+      line-height: 1.8;
+      background: #fff7d6;
+      border-radius: 10px;
+    }
 
-        .video-wrapper {
-            position: relative;
-            display: none;
-            width: 100%;
-            margin-top: 20px;
-            overflow: hidden;
-            background: #111;
-            border-radius: 12px;
-            user-select: none;
-        }
+    .video-stage {
+      display: none;
+      position: relative;
+      width: 100%;
+      margin-top: 18px;
+      background: #111;
+      border-radius: 12px;
+      overflow: hidden;
+      line-height: 0;
+      user-select: none;
+    }
 
-        #sourceVideo {
-            display: block;
-            width: 100%;
-            height: auto;
-            max-height: 600px;
-            background: #111;
-        }
+    #sourceVideo {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #111;
+    }
 
-        #selectionLayer {
-            position: absolute;
-            inset: 0;
-            z-index: 5;
-            cursor: crosshair;
-        }
+    #selectionLayer {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      cursor: crosshair;
+      touch-action: none;
+    }
 
-        #selectionBox {
-            position: absolute;
-            display: none;
-            border: 3px solid #ff2e2e;
-            background: rgba(255, 46, 46, 0.18);
-            pointer-events: none;
-        }
+    #selectionBox {
+      position: absolute;
+      display: none;
+      border: 3px solid #ff2e2e;
+      background: rgba(255,46,46,.20);
+      pointer-events: none;
+    }
 
-        .instructions {
-            display: none;
-            margin: 18px 0 8px;
-            padding: 14px;
-            text-align: center;
-            line-height: 1.8;
-            background: #fff7d6;
-            border-radius: 10px;
-        }
+    .settings {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      background: #f6f8fb;
+      border-radius: 12px;
+    }
 
-        .settings {
-            display: none;
-            margin-top: 18px;
-            padding: 18px;
-            background: #f6f8fb;
-            border-radius: 12px;
-        }
+    .setting-row {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
 
-        .setting-row {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 14px;
-        }
+    .setting-row label { font-weight: bold; }
+    input[type="range"] { width: 260px; }
 
-        .setting-row label {
-            font-weight: bold;
-        }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
 
-        input[type="range"] {
-            width: 260px;
-        }
+    button, .download-button {
+      padding: 13px 24px;
+      border: none;
+      border-radius: 9px;
+      font-size: 17px;
+      cursor: pointer;
+      text-decoration: none;
+    }
 
-        .buttons {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 20px;
-        }
+    .primary-button {
+      color: #fff;
+      background: #1769ff;
+    }
 
-        button,
-        .download-button {
-            padding: 13px 24px;
-            border: none;
-            border-radius: 9px;
-            font-size: 17px;
-            cursor: pointer;
-            text-decoration: none;
-        }
+    .secondary-button {
+      color: #172033;
+      background: #e8edf5;
+    }
 
-        .primary-button {
-            color: white;
-            background: #1769ff;
-        }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .55;
+    }
 
-        .secondary-button {
-            color: #172033;
-            background: #e8edf5;
-        }
+    .progress-area {
+      display: none;
+      margin-top: 22px;
+      padding: 18px;
+      text-align: center;
+      background: #f6f8fb;
+      border-radius: 12px;
+    }
 
-        button:disabled {
-            cursor: not-allowed;
-            opacity: 0.55;
-        }
+    progress {
+      width: 100%;
+      height: 22px;
+    }
 
-        .progress-area {
-            display: none;
-            margin-top: 24px;
-            padding: 18px;
-            text-align: center;
-            background: #f6f8fb;
-            border-radius: 12px;
-        }
+    #statusText {
+      margin-top: 12px;
+      font-weight: bold;
+    }
 
-        progress {
-            width: 100%;
-            height: 22px;
-        }
+    .result-area {
+      display: none;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+      text-align: center;
+    }
 
-        #statusText {
-            margin-top: 12px;
-            font-weight: bold;
-        }
+    #resultVideo {
+      width: 100%;
+      height: auto;
+      background: #111;
+      border-radius: 12px;
+    }
 
-        .result-area {
-            display: none;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            text-align: center;
-        }
+    .download-button {
+      display: inline-block;
+      margin-top: 17px;
+      color: #fff;
+      background: #129447;
+    }
 
-        #resultVideo {
-            width: 100%;
-            max-height: 600px;
-            background: #111;
-            border-radius: 12px;
-        }
+    #processingCanvas, #blurCanvas { display: none; }
 
-        .download-button {
-            display: inline-block;
-            margin-top: 17px;
-            color: white;
-            background: #129447;
-        }
+    .notice {
+      margin-top: 22px;
+      padding: 14px;
+      line-height: 1.8;
+      color: #536071;
+      background: #f6f8fb;
+      border-radius: 10px;
+    }
 
-        #processingCanvas {
-            display: none;
-        }
-
-        .notice {
-            margin-top: 22px;
-            padding: 14px;
-            line-height: 1.8;
-            color: #536071;
-            background: #f6f8fb;
-            border-radius: 10px;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-
-            .container {
-                padding: 17px;
-            }
-
-            h1 {
-                font-size: 25px;
-            }
-        }
-    </style>
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .container { padding: 17px; }
+      h1 { font-size: 25px; }
+    }
+  </style>
 </head>
 
 <body>
-
 <div class="container">
+  <h1>🎬 تمويه جزء من الفيديو</h1>
 
-    <h1>🎬 تمويه جزء من الفيديو</h1>
+  <p class="description">
+    اختر الفيديو، أوقفه عند ظهور العلامة، ثم اسحب بالماوس فوق مكانها.
+  </p>
 
-    <p class="description">
-        اختر الفيديو، ثم اسحب بإصبعك أو بالماوس فوق العلامة التي تريد تمويهها.
-    </p>
+  <div class="upload-box">
+    <input type="file" id="videoInput" accept="video/*">
+  </div>
 
-    <div class="upload-box">
-        <input type="file" id="videoInput" accept="video/*">
+  <div class="instructions" id="instructions">
+    أوقف الفيديو، ثم اسحب فوق العلامة لرسم المستطيل الأحمر.
+  </div>
+
+  <div class="video-stage" id="videoStage">
+    <video id="sourceVideo" controls playsinline></video>
+    <div id="selectionLayer">
+      <div id="selectionBox"></div>
+    </div>
+  </div>
+
+  <div class="settings" id="settings">
+    <div class="setting-row">
+      <label for="blurStrength">قوة التمويه:</label>
+      <input type="range" id="blurStrength" min="5" max="60" value="30">
+      <span id="blurValue">30</span>
     </div>
 
-    <div class="instructions" id="instructions">
-        أوقف الفيديو عند ظهور العلامة، ثم اسحب فوقها لرسم المستطيل الأحمر.
+    <div class="buttons">
+      <button type="button" class="secondary-button" id="clearSelection">
+        إعادة تحديد المنطقة
+      </button>
+
+      <button type="button" class="primary-button" id="processButton" disabled>
+        معالجة الفيديو
+      </button>
     </div>
+  </div>
 
-    <div class="video-wrapper" id="videoWrapper">
-        <video id="sourceVideo" controls playsinline></video>
-        <div id="selectionLayer">
-            <div id="selectionBox"></div>
-        </div>
-    </div>
+  <div class="progress-area" id="progressArea">
+    <progress id="progressBar" value="0" max="100"></progress>
+    <div id="statusText">جارٍ تجهيز الفيديو…</div>
+  </div>
 
-    <div class="settings" id="settings">
+  <canvas id="processingCanvas"></canvas>
+  <canvas id="blurCanvas"></canvas>
 
-        <div class="setting-row">
-            <label for="blurStrength">قوة التمويه:</label>
+  <div class="result-area" id="resultArea">
+    <h2>النتيجة</h2>
+    <video id="resultVideo" controls playsinline></video>
+    <br>
+    <a id="downloadButton" class="download-button">تحميل الفيديو</a>
+  </div>
 
-            <input
-                type="range"
-                id="blurStrength"
-                min="5"
-                max="50"
-                value="25"
-            >
-
-            <span id="blurValue">25</span>
-        </div>
-
-        <div class="buttons">
-            <button
-                type="button"
-                class="secondary-button"
-                id="clearSelection"
-            >
-                إعادة تحديد المنطقة
-            </button>
-
-            <button
-                type="button"
-                class="primary-button"
-                id="processButton"
-                disabled
-            >
-                معالجة الفيديو
-            </button>
-        </div>
-
-    </div>
-
-    <div class="progress-area" id="progressArea">
-        <progress id="progressBar" value="0" max="100"></progress>
-        <div id="statusText">جارٍ تجهيز الفيديو…</div>
-    </div>
-
-    <canvas id="processingCanvas"></canvas>
-
-    <div class="result-area" id="resultArea">
-        <h2>النتيجة</h2>
-
-        <video id="resultVideo" controls playsinline></video>
-
-        <br>
-
-        <a id="downloadButton" class="download-button">
-            تحميل الفيديو
-        </a>
-    </div>
-
-    <div class="notice">
-        تتم المعالجة داخل جهازك ولا يتم رفع الفيديو إلى خادم.
-        يجب إبقاء الصفحة مفتوحة حتى تنتهي المعالجة. الأداة مناسبة للمقاطع القصيرة،
-        واستخدمها فقط مع فيديو تملكه أو لديك إذن بتعديله.
-    </div>
-
+  <div class="notice">
+    المعالجة تتم داخل جهازك، ولا يتم رفع الفيديو إلى خادم. اترك الصفحة مفتوحة حتى تنتهي.
+    استخدم الأداة فقط مع فيديو تملكه أو لديك إذن بتعديله.
+  </div>
 </div>
 
 <script>
-    const videoInput = document.getElementById("videoInput");
-    const sourceVideo = document.getElementById("sourceVideo");
-    const videoWrapper = document.getElementById("videoWrapper");
-    const selectionLayer = document.getElementById("selectionLayer");
-    const selectionBox = document.getElementById("selectionBox");
+  const videoInput = document.getElementById("videoInput");
+  const sourceVideo = document.getElementById("sourceVideo");
+  const videoStage = document.getElementById("videoStage");
+  const selectionLayer = document.getElementById("selectionLayer");
+  const selectionBox = document.getElementById("selectionBox");
 
-    const instructions = document.getElementById("instructions");
-    const settings = document.getElementById("settings");
+  const instructions = document.getElementById("instructions");
+  const settings = document.getElementById("settings");
 
-    const blurStrength = document.getElementById("blurStrength");
-    const blurValue = document.getElementById("blurValue");
+  const blurStrength = document.getElementById("blurStrength");
+  const blurValue = document.getElementById("blurValue");
 
-    const clearSelectionButton = document.getElementById("clearSelection");
-    const processButton = document.getElementById("processButton");
+  const clearSelectionButton = document.getElementById("clearSelection");
+  const processButton = document.getElementById("processButton");
 
-    const progressArea = document.getElementById("progressArea");
-    const progressBar = document.getElementById("progressBar");
-    const statusText = document.getElementById("statusText");
+  const progressArea = document.getElementById("progressArea");
+  const progressBar = document.getElementById("progressBar");
+  const statusText = document.getElementById("statusText");
 
-    const processingCanvas = document.getElementById("processingCanvas");
-    const resultArea = document.getElementById("resultArea");
-    const resultVideo = document.getElementById("resultVideo");
-    const downloadButton = document.getElementById("downloadButton");
+  const processingCanvas = document.getElementById("processingCanvas");
+  const blurCanvas = document.getElementById("blurCanvas");
 
-    let videoObjectUrl = null;
-    let resultObjectUrl = null;
+  const resultArea = document.getElementById("resultArea");
+  const resultVideo = document.getElementById("resultVideo");
+  const downloadButton = document.getElementById("downloadButton");
 
-    let isDrawing = false;
-    let startX = 0;
-    let startY = 0;
+  let videoObjectUrl = null;
+  let resultObjectUrl = null;
 
-    let selection = null;
-    let animationFrameId = null;
+  let isDrawing = false;
+  let startX = 0;
+  let startY = 0;
+  let selection = null;
+  let animationFrameId = null;
 
-    blurStrength.addEventListener("input", function () {
-        blurValue.textContent = blurStrength.value;
+  blurStrength.addEventListener("input", () => {
+    blurValue.textContent = blurStrength.value;
+  });
+
+  videoInput.addEventListener("change", () => {
+    const file = videoInput.files[0];
+    if (!file) return;
+
+    if (videoObjectUrl) URL.revokeObjectURL(videoObjectUrl);
+    videoObjectUrl = URL.createObjectURL(file);
+
+    sourceVideo.src = videoObjectUrl;
+    videoStage.style.display = "block";
+    instructions.style.display = "block";
+    settings.style.display = "block";
+    resultArea.style.display = "none";
+    progressArea.style.display = "none";
+
+    clearSelection();
+  });
+
+  function getPointerPosition(event) {
+    const rect = selectionLayer.getBoundingClientRect();
+    const point = event.touches?.[0] || event.changedTouches?.[0] || event;
+
+    return {
+      x: Math.max(0, Math.min(point.clientX - rect.left, rect.width)),
+      y: Math.max(0, Math.min(point.clientY - rect.top, rect.height))
+    };
+  }
+
+  function startSelection(event) {
+    if (!sourceVideo.src || processButton.dataset.processing === "true") return;
+
+    event.preventDefault();
+    sourceVideo.pause();
+
+    const pos = getPointerPosition(event);
+    startX = pos.x;
+    startY = pos.y;
+    isDrawing = true;
+
+    selectionBox.style.display = "block";
+    selectionBox.style.left = startX + "px";
+    selectionBox.style.top = startY + "px";
+    selectionBox.style.width = "0px";
+    selectionBox.style.height = "0px";
+  }
+
+  function moveSelection(event) {
+    if (!isDrawing) return;
+    event.preventDefault();
+
+    const pos = getPointerPosition(event);
+    const left = Math.min(startX, pos.x);
+    const top = Math.min(startY, pos.y);
+    const width = Math.abs(pos.x - startX);
+    const height = Math.abs(pos.y - startY);
+
+    selectionBox.style.left = left + "px";
+    selectionBox.style.top = top + "px";
+    selectionBox.style.width = width + "px";
+    selectionBox.style.height = height + "px";
+  }
+
+  function endSelection(event) {
+    if (!isDrawing) return;
+    event.preventDefault();
+    isDrawing = false;
+
+    const layerRect = selectionLayer.getBoundingClientRect();
+    const boxRect = selectionBox.getBoundingClientRect();
+
+    const width = boxRect.width;
+    const height = boxRect.height;
+
+    if (width < 10 || height < 10) {
+      clearSelection();
+      alert("حدد مساحة أكبر قليلًا فوق العلامة.");
+      return;
+    }
+
+    selection = {
+      xRatio: (boxRect.left - layerRect.left) / layerRect.width,
+      yRatio: (boxRect.top - layerRect.top) / layerRect.height,
+      widthRatio: width / layerRect.width,
+      heightRatio: height / layerRect.height
+    };
+
+    processButton.disabled = false;
+  }
+
+  selectionLayer.addEventListener("pointerdown", startSelection);
+  selectionLayer.addEventListener("pointermove", moveSelection);
+  window.addEventListener("pointerup", endSelection);
+
+  function clearSelection() {
+    selection = null;
+    selectionBox.style.display = "none";
+    selectionBox.style.left = "0";
+    selectionBox.style.top = "0";
+    selectionBox.style.width = "0";
+    selectionBox.style.height = "0";
+    processButton.disabled = true;
+  }
+
+  clearSelectionButton.addEventListener("click", clearSelection);
+
+  function chooseMimeType() {
+    const types = [
+      "video/webm;codecs=vp9,opus",
+      "video/webm;codecs=vp8,opus",
+      "video/webm"
+    ];
+
+    for (const type of types) {
+      if (MediaRecorder.isTypeSupported(type)) return type;
+    }
+
+    return "";
+  }
+
+  function drawProcessedFrame(ctx, tempCtx, canvas, tempCanvas) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.filter = "none";
+    ctx.drawImage(sourceVideo, 0, 0, canvas.width, canvas.height);
+
+    if (!selection) return;
+
+    const x = Math.round(selection.xRatio * canvas.width);
+    const y = Math.round(selection.yRatio * canvas.height);
+    const w = Math.round(selection.widthRatio * canvas.width);
+    const h = Math.round(selection.heightRatio * canvas.height);
+
+    const padding = Math.max(20, Number(blurStrength.value) * 2);
+    const sx = Math.max(0, x - padding);
+    const sy = Math.max(0, y - padding);
+    const sw = Math.min(canvas.width - sx, w + padding * 2);
+    const sh = Math.min(canvas.height - sy, h + padding * 2);
+
+    tempCanvas.width = sw;
+    tempCanvas.height = sh;
+
+    tempCtx.clearRect(0, 0, sw, sh);
+    tempCtx.filter = `blur(${blurStrength.value}px)`;
+    tempCtx.drawImage(
+      sourceVideo,
+      sx, sy, sw, sh,
+      0, 0, sw, sh
+    );
+    tempCtx.filter = "none";
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+    ctx.drawImage(tempCanvas, sx, sy);
+    ctx.restore();
+  }
+
+  async function startProcessing() {
+    if (!selection) {
+      alert("حدد مكان العلامة أولًا.");
+      return;
+    }
+
+    if (!window.MediaRecorder || !processingCanvas.captureStream) {
+      alert("افتح الأداة بمتصفح Google Chrome.");
+      return;
+    }
+
+    processButton.dataset.processing = "true";
+    processButton.disabled = true;
+    clearSelectionButton.disabled = true;
+    videoInput.disabled = true;
+    selectionLayer.style.pointerEvents = "none";
+    selectionBox.style.display = "none";
+
+    progressArea.style.display = "block";
+    resultArea.style.display = "none";
+    progressBar.value = 0;
+    statusText.textContent = "جارٍ تجهيز الفيديو…";
+
+    processingCanvas.width = sourceVideo.videoWidth;
+    processingCanvas.height = sourceVideo.videoHeight;
+
+    const ctx = processingCanvas.getContext("2d");
+    const tempCtx = blurCanvas.getContext("2d");
+
+    const canvasStream = processingCanvas.captureStream(30);
+
+    let sourceStream = null;
+    if (sourceVideo.captureStream) {
+      sourceStream = sourceVideo.captureStream();
+    } else if (sourceVideo.mozCaptureStream) {
+      sourceStream = sourceVideo.mozCaptureStream();
+    }
+
+    if (sourceStream) {
+      sourceStream.getAudioTracks().forEach(track => canvasStream.addTrack(track));
+    }
+
+    const mimeType = chooseMimeType();
+    let recorder;
+
+    try {
+      recorder = new MediaRecorder(
+        canvasStream,
+        mimeType
+          ? { mimeType, videoBitsPerSecond: 6000000 }
+          : { videoBitsPerSecond: 6000000 }
+      );
+    } catch (error) {
+      resetControls();
+      alert("تعذر بدء معالجة الفيديو.");
+      return;
+    }
+
+    const chunks = [];
+
+    recorder.addEventListener("dataavailable", event => {
+      if (event.data && event.data.size > 0) chunks.push(event.data);
     });
 
-    videoInput.addEventListener("change", function () {
-        const file = videoInput.files[0];
+    recorder.addEventListener("stop", () => {
+      cancelAnimationFrame(animationFrameId);
 
-        if (!file) {
-            return;
-        }
+      const finalType = recorder.mimeType || mimeType || "video/webm";
+      const blob = new Blob(chunks, { type: finalType });
 
-        if (videoObjectUrl) {
-            URL.revokeObjectURL(videoObjectUrl);
-        }
+      if (resultObjectUrl) URL.revokeObjectURL(resultObjectUrl);
+      resultObjectUrl = URL.createObjectURL(blob);
 
-        videoObjectUrl = URL.createObjectURL(file);
-        sourceVideo.src = videoObjectUrl;
+      resultVideo.src = resultObjectUrl;
+      resultArea.style.display = "block";
+      downloadButton.href = resultObjectUrl;
+      downloadButton.download = "video-blurred.webm";
 
-        videoWrapper.style.display = "block";
-        instructions.style.display = "block";
-        settings.style.display = "block";
-
-        resultArea.style.display = "none";
-        progressArea.style.display = "none";
-
-        clearSelection();
+      progressBar.value = 100;
+      statusText.textContent = "اكتملت المعالجة بنجاح.";
+      resetControls();
     });
 
-    sourceVideo.addEventListener("loadedmetadata", function () {
-        sourceVideo.currentTime = 0;
+    recorder.addEventListener("error", () => {
+      cancelAnimationFrame(animationFrameId);
+      resetControls();
+      alert("حدث خطأ أثناء معالجة الفيديو.");
     });
 
-    function getPointerPosition(event) {
-        const rect = selectionLayer.getBoundingClientRect();
+    function renderLoop() {
+      if (!sourceVideo.paused && !sourceVideo.ended && sourceVideo.readyState >= 2) {
+        drawProcessedFrame(ctx, tempCtx, processingCanvas, blurCanvas);
 
-        let clientX;
-        let clientY;
-
-        if (event.touches && event.touches.length > 0) {
-            clientX = event.touches[0].clientX;
-            clientY = event.touches[0].clientY;
-        } else {
-            clientX = event.clientX;
-            clientY = event.clientY;
+        if (sourceVideo.duration) {
+          const percent = (sourceVideo.currentTime / sourceVideo.duration) * 100;
+          progressBar.value = Math.min(99, percent);
+          statusText.textContent = "جارٍ معالجة الفيديو: " + Math.floor(percent) + "%";
         }
+      }
 
-        return {
-            x: Math.max(0, Math.min(clientX - rect.left, rect.width)),
-            y: Math.max(0, Math.min(clientY - rect.top, rect.height))
-        };
+      if (!sourceVideo.ended) {
+        animationFrameId = requestAnimationFrame(renderLoop);
+      }
     }
 
-    function startSelection(event) {
-        if (!sourceVideo.src || processButton.dataset.processing === "true") {
-            return;
-        }
+    sourceVideo.pause();
+    sourceVideo.currentTime = 0;
 
-        event.preventDefault();
-
-        sourceVideo.pause();
-
-        const position = getPointerPosition(event);
-
-        startX = position.x;
-        startY = position.y;
-        isDrawing = true;
-
-        selectionBox.style.display = "block";
-        selectionBox.style.left = startX + "px";
-        selectionBox.style.top = startY + "px";
-        selectionBox.style.width = "0px";
-        selectionBox.style.height = "0px";
-    }
-
-    function moveSelection(event) {
-        if (!isDrawing) {
-            return;
-        }
-
-        event.preventDefault();
-
-        const position = getPointerPosition(event);
-
-        const left = Math.min(startX, position.x);
-        const top = Math.min(startY, position.y);
-
-        const width = Math.abs(position.x - startX);
-        const height = Math.abs(position.y - startY);
-
-        selectionBox.style.left = left + "px";
-        selectionBox.style.top = top + "px";
-        selectionBox.style.width = width + "px";
-        selectionBox.style.height = height + "px";
-    }
-
-    function endSelection(event) {
-        if (!isDrawing) {
-            return;
-        }
-
-        event.preventDefault();
-        isDrawing = false;
-
-        const layerRect = selectionLayer.getBoundingClientRect();
-        const boxRect = selectionBox.getBoundingClientRect();
-
-        const width = boxRect.width;
-        const height = boxRect.height;
-
-        if (width < 10 || height < 10) {
-            clearSelection();
-            alert("حدد مساحة أكبر قليلًا فوق العلامة.");
-            return;
-        }
-
-       const videoRect = sourceVideo.getBoundingClientRect();
-
-selection = {
-    xRatio: (boxRect.left - videoRect.left) / videoRect.width,
-    yRatio: (boxRect.top - videoRect.top) / videoRect.height,
-    widthRatio: width / videoRect.width,
-    heightRatio: height / videoRect.height
-};
-        };
-
-        processButton.disabled = false;
-    }
-
-    selectionLayer.addEventListener("mousedown", startSelection);
-    selectionLayer.addEventListener("mousemove", moveSelection);
-    window.addEventListener("mouseup", endSelection);
-
-    selectionLayer.addEventListener("touchstart", startSelection, {
-        passive: false
+    await new Promise(resolve => {
+      if (sourceVideo.readyState >= 2) {
+        resolve();
+      } else {
+        sourceVideo.addEventListener("canplay", resolve, { once: true });
+      }
     });
 
-    selectionLayer.addEventListener("touchmove", moveSelection, {
-        passive: false
-    });
+    drawProcessedFrame(ctx, tempCtx, processingCanvas, blurCanvas);
 
-    window.addEventListener("touchend", endSelection, {
-        passive: false
-    });
+    recorder.start(1000);
 
-    function clearSelection() {
-        selection = null;
+    sourceVideo.addEventListener("ended", () => {
+      drawProcessedFrame(ctx, tempCtx, processingCanvas, blurCanvas);
 
-        selectionBox.style.display = "none";
-        selectionBox.style.left = "0";
-        selectionBox.style.top = "0";
-        selectionBox.style.width = "0";
-        selectionBox.style.height = "0";
+      setTimeout(() => {
+        if (recorder.state !== "inactive") recorder.stop();
+      }, 300);
+    }, { once: true });
 
-        processButton.disabled = true;
+    try {
+      await sourceVideo.play();
+      renderLoop();
+    } catch (error) {
+      if (recorder.state !== "inactive") recorder.stop();
+      resetControls();
+      alert("اضغط تشغيل الفيديو مرة، ثم أوقفه وجرّب من جديد.");
     }
-
-    clearSelectionButton.addEventListener("click", clearSelection);
-
-    function chooseMimeType() {
-        const types = [
-            "video/mp4",
-            "video/webm;codecs=vp9,opus",
-            "video/webm;codecs=vp8,opus",
-            "video/webm"
-        ];
-
-        for (const type of types) {
-            if (MediaRecorder.isTypeSupported(type)) {
-                return type;
-            }
-        }
-
-        return "";
-    }
-
-    function drawProcessedFrame(context, canvas) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        context.filter = "none";
-        context.drawImage(
-            sourceVideo,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-        if (!selection) {
-            return;
-        }
-
-        const x = Math.round(selection.xRatio * canvas.width);
-        const y = Math.round(selection.yRatio * canvas.height);
-        const width = Math.round(selection.widthRatio * canvas.width);
-        const height = Math.round(selection.heightRatio * canvas.height);
-
-        context.save();
-
-        context.beginPath();
-        context.rect(x, y, width, height);
-        context.clip();
-
-        context.filter = `blur(${blurStrength.value}px)`;
-
-        const extra = Number(blurStrength.value) * 2;
-
-        context.drawImage(
-            sourceVideo,
-            Math.max(0, x - extra),
-            Math.max(0, y - extra),
-            Math.min(canvas.width - Math.max(0, x - extra), width + extra * 2),
-            Math.min(canvas.height - Math.max(0, y - extra), height + extra * 2),
-            Math.max(0, x - extra),
-            Math.max(0, y - extra),
-            Math.min(canvas.width - Math.max(0, x - extra), width + extra * 2),
-            Math.min(canvas.height - Math.max(0, y - extra), height + extra * 2)
-        );
-
-        context.restore();
-        context.filter = "none";
-    }
-
-    async function startProcessing() {
-        if (!selection) {
-            alert("حدد مكان العلامة أولًا.");
-            return;
-        }
-
-        if (
-            typeof MediaRecorder === "undefined" ||
-            typeof processingCanvas.captureStream !== "function"
-        ) {
-            alert("متصفحك لا يدعم المعالجة. افتح الأداة بمتصفح Google Chrome.");
-            return;
-        }
-
-        processButton.dataset.processing = "true";
-        processButton.disabled = true;
-        clearSelectionButton.disabled = true;
-        videoInput.disabled = true;
-
-        selectionLayer.style.pointerEvents = "none";
-        selectionBox.style.display = "none";
-
-        progressArea.style.display = "block";
-        resultArea.style.display = "none";
-
-        progressBar.value = 0;
-        statusText.textContent = "جارٍ تجهيز الفيديو…";
-
-        processingCanvas.width = sourceVideo.videoWidth;
-        processingCanvas.height = sourceVideo.videoHeight;
-
-        const context = processingCanvas.getContext("2d");
-
-        const canvasStream = processingCanvas.captureStream(30);
-
-        let sourceStream = null;
-
-        if (typeof sourceVideo.captureStream === "function") {
-            sourceStream = sourceVideo.captureStream();
-        } else if (typeof sourceVideo.mozCaptureStream === "function") {
-            sourceStream = sourceVideo.mozCaptureStream();
-        }
-
-        if (sourceStream) {
-            const audioTracks = sourceStream.getAudioTracks();
-
-            audioTracks.forEach(function (track) {
-                canvasStream.addTrack(track);
-            });
-        }
-
-        const mimeType = chooseMimeType();
-
-        let recorder;
-
-        try {
-            recorder = mimeType
-                ? new MediaRecorder(canvasStream, {
-                    mimeType: mimeType,
-                    videoBitsPerSecond: 6000000
-                })
-                : new MediaRecorder(canvasStream);
-        } catch (error) {
-            resetControls();
-            alert("تعذر بدء معالجة الفيديو على هذا المتصفح.");
-            return;
-        }
-
-        const chunks = [];
-
-        recorder.addEventListener("dataavailable", function (event) {
-            if (event.data && event.data.size > 0) {
-                chunks.push(event.data);
-            }
-        });
-
-        recorder.addEventListener("stop", function () {
-            cancelAnimationFrame(animationFrameId);
-
-            const finalType = recorder.mimeType || mimeType || "video/webm";
-            const videoBlob = new Blob(chunks, {
-                type: finalType
-            });
-
-            if (resultObjectUrl) {
-                URL.revokeObjectURL(resultObjectUrl);
-            }
-
-            resultObjectUrl = URL.createObjectURL(videoBlob);
-
-            resultVideo.src = resultObjectUrl;
-            resultArea.style.display = "block";
-
-            const isMp4 = finalType.includes("mp4");
-            downloadButton.download = isMp4
-                ? "video-blurred.mp4"
-                : "video-blurred.webm";
-
-            downloadButton.href = resultObjectUrl;
-
-            progressBar.value = 100;
-            statusText.textContent = "اكتملت المعالجة بنجاح.";
-
-            resetControls();
-        });
-
-        recorder.addEventListener("error", function () {
-            cancelAnimationFrame(animationFrameId);
-
-            resetControls();
-
-            alert("حدث خطأ أثناء معالجة الفيديو.");
-        });
-
-        function renderLoop() {
-            if (
-                sourceVideo.paused ||
-                sourceVideo.ended ||
-                sourceVideo.readyState < 2
-            ) {
-                if (!sourceVideo.ended) {
-                    animationFrameId = requestAnimationFrame(renderLoop);
-                }
-
-                return;
-            }
-
-            drawProcessedFrame(context, processingCanvas);
-
-            if (sourceVideo.duration) {
-                const percent =
-                    (sourceVideo.currentTime / sourceVideo.duration) * 100;
-
-                progressBar.value = Math.min(99, percent);
-                statusText.textContent =
-                    "جارٍ معالجة الفيديو: " +
-                    Math.floor(percent) +
-                    "%";
-            }
-
-            animationFrameId = requestAnimationFrame(renderLoop);
-        }
-
-        sourceVideo.pause();
-        sourceVideo.currentTime = 0;
-
-        await new Promise(function (resolve) {
-            if (sourceVideo.readyState >= 2) {
-                resolve();
-            } else {
-                sourceVideo.addEventListener("canplay", resolve, {
-                    once: true
-                });
-            }
-        });
-
-        drawProcessedFrame(context, processingCanvas);
-
-        recorder.start(1000);
-
-        sourceVideo.addEventListener(
-            "ended",
-            function () {
-                drawProcessedFrame(context, processingCanvas);
-
-                setTimeout(function () {
-                    if (recorder.state !== "inactive") {
-                        recorder.stop();
-                    }
-                }, 300);
-            },
-            {
-                once: true
-            }
-        );
-
-        try {
-            await sourceVideo.play();
-            renderLoop();
-        } catch (error) {
-            if (recorder.state !== "inactive") {
-                recorder.stop();
-            }
-
-            resetControls();
-
-            alert("اضغط تشغيل الفيديو مرة، ثم أوقفه وجرّب المعالجة من جديد.");
-        }
-    }
-
-    function resetControls() {
-        processButton.dataset.processing = "false";
-        processButton.disabled = !selection;
-
-        clearSelectionButton.disabled = false;
-        videoInput.disabled = false;
-
-        selectionLayer.style.pointerEvents = "auto";
-
-        if (selection) {
-            selectionBox.style.display = "block";
-        }
-    }
-
-    processButton.addEventListener("click", startProcessing);
+  }
+
+  function resetControls() {
+    processButton.dataset.processing = "false";
+    processButton.disabled = !selection;
+    clearSelectionButton.disabled = false;
+    videoInput.disabled = false;
+    selectionLayer.style.pointerEvents = "auto";
+
+    if (selection) selectionBox.style.display = "block";
+  }
+
+  processButton.addEventListener("click", startProcessing);
 </script>
-
 </body>
 </html>
