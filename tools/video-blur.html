@@ -1,157 +1,390 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>أداة تمويه احترافية ومجانية</title>
-    <style>
-        body { font-family: sans-serif; background: #f4f7f6; text-align: center; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .video-wrapper { position: relative; display: inline-block; margin-top: 15px; max-width: 100%; }
-        video { display: block; max-width: 100%; border-radius: 4px; }
-        canvas { position: absolute; top: 0; left: 0; pointer-events: none; }
-        .controls { margin-top: 15px; display: flex; gap: 10px; justify-content: center; align-items: center; }
-        .blur-box { position: absolute; border: 2px dashed #3498db; cursor: move; box-sizing: border-box; }
-        input[type="range"] { cursor: pointer; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>أداة تمويه الفيديو الاحترافية</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;padding:20px;font-family:Arial,sans-serif;background:#f3f5f8;color:#172033}
+    .container{max-width:1000px;margin:auto;background:#fff;padding:24px;border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.1)}
+    h1{text-align:center;margin-top:0}
+    .desc{text-align:center;color:#5c6678;line-height:1.8}
+    .upload{margin:22px 0;padding:24px;border:2px dashed #1769ff;border-radius:14px;background:#f7faff;text-align:center}
+    .stage{display:none;position:relative;width:100%;background:#111;border-radius:12px;overflow:hidden;line-height:0;user-select:none}
+    #sourceVideo{display:block;width:100%;height:auto}
+    #selectionLayer{position:absolute;inset:0;cursor:crosshair;touch-action:none}
+    #selectionBox{position:absolute;display:none;border:3px solid #ff2e2e;background:rgba(255,46,46,.18);box-shadow:0 0 0 9999px rgba(0,0,0,.08);pointer-events:none}
+    .panel{display:none;margin-top:18px;padding:18px;background:#f6f8fb;border-radius:12px}
+    .row{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+    .row label{font-weight:bold}
+    input[type=range]{width:260px}
+    select{padding:10px;border:1px solid #ccd3df;border-radius:8px}
+    .buttons{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+    button,.download{padding:13px 24px;border:0;border-radius:9px;font-size:17px;cursor:pointer;text-decoration:none}
+    .primary{background:#1769ff;color:#fff}
+    .secondary{background:#e8edf5;color:#172033}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .progress{display:none;margin-top:20px;padding:18px;background:#f6f8fb;border-radius:12px;text-align:center}
+    progress{width:100%;height:22px}
+    .result{display:none;margin-top:24px;padding-top:20px;border-top:1px solid #ddd;text-align:center}
+    #resultVideo{width:100%;background:#111;border-radius:12px}
+    .download{display:inline-block;margin-top:16px;background:#129447;color:#fff}
+    canvas{display:none}
+    .notice{margin-top:20px;padding:14px;background:#fff7d6;border-radius:10px;line-height:1.8}
+    @media(max-width:600px){body{padding:10px}.container{padding:16px}h1{font-size:24px}}
+  </style>
 </head>
 <body>
-
 <div class="container">
-    <h2>أداة التمويه الاحترافي المطور</h2>
-    <input type="file" id="videoUpload" accept="video/*">
-    
-    <div class="controls">
-        <label>قوة التمويه:</label>
-        <input type="range" id="blurSize" min="5" max="30" value="15">
-        <button id="toggleType">تغيير النوع (ضبابي / بكسل)</button>
+  <h1>🎬 أداة تمويه الفيديو الاحترافية</h1>
+  <p class="desc">اختر الفيديو، أوقفه عند الجزء المطلوب، ثم اسحب فوق المنطقة التي تريد تمويهها.</p>
+
+  <div class="upload">
+    <input type="file" id="videoInput" accept="video/*">
+  </div>
+
+  <div class="stage" id="stage">
+    <video id="sourceVideo" controls playsinline></video>
+    <div id="selectionLayer">
+      <div id="selectionBox"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel">
+    <div class="row">
+      <label for="mode">نوع المعالجة:</label>
+      <select id="mode">
+        <option value="blur">تمويه ناعم</option>
+        <option value="pixelate">بكسلة</option>
+      </select>
     </div>
 
-    <div class="video-wrapper" id="wrapper">
-        <video id="myVideo" controls></video>
-        <canvas id="blurCanvas"></canvas>
-        <!-- مربع التحكم بمكان التمويه فوق الفيديو -->
-        <div id="blurOverlay" class="blur-box" style="width: 120px; height: 120px; top: 20px; left: 20px;"></div>
+    <div class="row">
+      <label for="strength">القوة:</label>
+      <input type="range" id="strength" min="8" max="70" value="32">
+      <span id="strengthValue">32</span>
     </div>
+
+    <div class="row">
+      <label for="feather">نعومة الحواف:</label>
+      <input type="range" id="feather" min="0" max="40" value="18">
+      <span id="featherValue">18</span>
+    </div>
+
+    <div class="buttons">
+      <button class="secondary" id="clearButton">إعادة تحديد المنطقة</button>
+      <button class="primary" id="processButton" disabled>معالجة الفيديو</button>
+    </div>
+  </div>
+
+  <div class="progress" id="progressArea">
+    <progress id="progressBar" value="0" max="100"></progress>
+    <div id="statusText">جارٍ تجهيز الفيديو…</div>
+  </div>
+
+  <canvas id="mainCanvas"></canvas>
+  <canvas id="effectCanvas"></canvas>
+  <canvas id="maskCanvas"></canvas>
+
+  <div class="result" id="resultArea">
+    <h2>النتيجة</h2>
+    <video id="resultVideo" controls playsinline></video>
+    <br>
+    <a id="downloadButton" class="download">تحميل الفيديو</a>
+  </div>
+
+  <div class="notice">
+    تتم المعالجة داخل جهازك. الأداة مناسبة لتمويه الوجوه أو اللوحات أو المعلومات الحساسة في فيديوهاتك.
+  </div>
 </div>
 
 <script>
-const video = document.getElementById('myVideo');
-const canvas = document.getElementById('blurCanvas');
-const ctx = canvas.getContext('2d');
-const overlay = document.getElementById('blurOverlay');
-const wrapper = document.getElementById('wrapper');
-const blurSizeInput = document.getElementById('blurSize');
-const toggleTypeBtn = document.getElementById('toggleType');
+const videoInput = document.getElementById("videoInput");
+const sourceVideo = document.getElementById("sourceVideo");
+const stage = document.getElementById("stage");
+const selectionLayer = document.getElementById("selectionLayer");
+const selectionBox = document.getElementById("selectionBox");
+const panel = document.getElementById("panel");
+const mode = document.getElementById("mode");
+const strength = document.getElementById("strength");
+const feather = document.getElementById("feather");
+const strengthValue = document.getElementById("strengthValue");
+const featherValue = document.getElementById("featherValue");
+const clearButton = document.getElementById("clearButton");
+const processButton = document.getElementById("processButton");
+const progressArea = document.getElementById("progressArea");
+const progressBar = document.getElementById("progressBar");
+const statusText = document.getElementById("statusText");
+const mainCanvas = document.getElementById("mainCanvas");
+const effectCanvas = document.getElementById("effectCanvas");
+const maskCanvas = document.getElementById("maskCanvas");
+const resultArea = document.getElementById("resultArea");
+const resultVideo = document.getElementById("resultVideo");
+const downloadButton = document.getElementById("downloadButton");
 
-let isPixelating = true; 
-let isDragging = false;
-let startX, startY, startLeft, startTop;
+let selection = null;
+let drawing = false;
+let startX = 0, startY = 0;
+let sourceUrl = null, resultUrl = null;
+let rafId = null;
 
-// 1. تشغيل الفيديو المرفوع وضبط قياسات الكانفاس تلقائياً
-document.getElementById('videoUpload').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        video.src = URL.createObjectURL(file);
-        video.onloadedmetadata = () => {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-        };
-    }
+strength.addEventListener("input",()=>strengthValue.textContent=strength.value);
+feather.addEventListener("input",()=>featherValue.textContent=feather.value);
+
+videoInput.addEventListener("change",()=>{
+  const file = videoInput.files[0];
+  if(!file) return;
+  if(sourceUrl) URL.revokeObjectURL(sourceUrl);
+  sourceUrl = URL.createObjectURL(file);
+  sourceVideo.src = sourceUrl;
+  stage.style.display = "block";
+  panel.style.display = "block";
+  resultArea.style.display = "none";
+  progressArea.style.display = "none";
+  clearSelection();
 });
 
-// 2. تحريك مربع التمويه بالفأرة لتحديد المكان بدقة
-overlay.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    startLeft = overlay.offsetLeft;
-    startTop = overlay.offsetTop;
-});
-
-document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    let newLeft = startLeft + (e.clientX - startX);
-    let newTop = startTop + (e.clientY - startY);
-    
-    // منع خروج المربع عن حدود الفيديو
-    newLeft = Math.max(0, Math.min(newLeft, wrapper.clientWidth - overlay.clientWidth));
-    newTop = Math.max(0, Math.min(newTop, wrapper.clientHeight - overlay.clientHeight));
-    
-    overlay.style.left = newLeft + 'px';
-    overlay.style.top = newTop + 'px';
-});
-
-document.addEventListener('mouseup', () => isDragging = false);
-
-// 3. معالجة وتطبيق التمويه الاحترافي إطار بإطار (Frame by Frame)
-function processBlur() {
-    if (video.paused || video.ended) {
-        requestAnimationFrame(processBlur);
-        return;
-    }
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // حساب نسب الأبعاد بين حجم الفيديو الحقيقي وحجمه المعروض على الشاشة
-    const scaleX = video.videoWidth / video.clientWidth;
-    const scaleY = video.videoHeight / video.clientHeight;
-
-    const x = overlay.offsetLeft * scaleX;
-    const y = overlay.offsetTop * scaleY;
-    const w = overlay.clientWidth * scaleX;
-    const h = overlay.clientHeight * scaleY;
-    const size = parseInt(blurSizeInput.value);
-
-    if (w > 0 && h > 0) {
-        if (isPixelating) {
-            // تأثير تمويه البكسل الاحترافي (Mosaic)
-            ctx.drawImage(video, x, y, w, h, x, y, w, h);
-            let imgData = ctx.getImageData(x, y, w, h);
-            let data = imgData.data;
-
-            for (let r = 0; r < h; r += size) {
-                for (let c = 0; c < w; c += size) {
-                    let pixelIndex = (r * w + c) * 4;
-                    let red = data[pixelIndex];
-                    let green = data[pixelIndex + 1];
-                    let blue = data[pixelIndex + 2];
-
-                    for (let br = 0; br < size && r + br < h; br++) {
-                        for (let bc = 0; bc < size && c + bc < w; bc++) {
-                            let bi = ((r + br) * w + (c + bc)) * 4;
-                            data[bi] = red;
-                            data[bi + 1] = green;
-                            data[bi + 2] = blue;
-                        }
-                    }
-                }
-            }
-            ctx.putImageData(imgData, x, y);
-        } else {
-            // تأثير التمويه الضبابي الناعم (Gaussian)
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(x, y, w, h);
-            ctx.clip();
-            ctx.filter = `blur(${size}px)`;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            ctx.restore();
-        }
-    }
-
-    requestAnimationFrame(processBlur);
+function pointerPos(e){
+  const r = selectionLayer.getBoundingClientRect();
+  return {
+    x: Math.max(0, Math.min(e.clientX-r.left, r.width)),
+    y: Math.max(0, Math.min(e.clientY-r.top, r.height))
+  };
 }
 
-video.addEventListener('play', () => {
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    processBlur();
+selectionLayer.addEventListener("pointerdown",e=>{
+  if(!sourceVideo.src || processButton.dataset.processing==="true") return;
+  e.preventDefault();
+  sourceVideo.pause();
+  const p = pointerPos(e);
+  startX=p.x; startY=p.y; drawing=true;
+  selectionBox.style.display="block";
+  selectionBox.style.left=startX+"px";
+  selectionBox.style.top=startY+"px";
+  selectionBox.style.width="0px";
+  selectionBox.style.height="0px";
 });
 
-toggleTypeBtn.addEventListener('click', () => {
-    isPixelating = !isPixelating;
+selectionLayer.addEventListener("pointermove",e=>{
+  if(!drawing) return;
+  e.preventDefault();
+  const p = pointerPos(e);
+  const left=Math.min(startX,p.x), top=Math.min(startY,p.y);
+  const width=Math.abs(p.x-startX), height=Math.abs(p.y-startY);
+  selectionBox.style.left=left+"px";
+  selectionBox.style.top=top+"px";
+  selectionBox.style.width=width+"px";
+  selectionBox.style.height=height+"px";
 });
+
+window.addEventListener("pointerup",e=>{
+  if(!drawing) return;
+  drawing=false;
+  const lr=selectionLayer.getBoundingClientRect();
+  const br=selectionBox.getBoundingClientRect();
+  if(br.width<10 || br.height<10){
+    clearSelection();
+    alert("حدد مساحة أكبر قليلًا.");
+    return;
+  }
+  selection={
+    x:(br.left-lr.left)/lr.width,
+    y:(br.top-lr.top)/lr.height,
+    w:br.width/lr.width,
+    h:br.height/lr.height
+  };
+  processButton.disabled=false;
+});
+
+function clearSelection(){
+  selection=null;
+  selectionBox.style.display="none";
+  processButton.disabled=true;
+}
+clearButton.addEventListener("click",clearSelection);
+
+function chooseMime(){
+  const list=["video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"];
+  return list.find(t=>MediaRecorder.isTypeSupported(t)) || "";
+}
+
+function roundedMask(ctx,x,y,w,h,r,featherPx){
+  ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+  ctx.save();
+  const g=ctx.createRadialGradient(
+    x+w/2,y+h/2,Math.max(1,Math.min(w,h)/2-featherPx),
+    x+w/2,y+h/2,Math.max(w,h)/2+featherPx
+  );
+  g.addColorStop(0,"rgba(255,255,255,1)");
+  g.addColorStop(0.75,"rgba(255,255,255,1)");
+  g.addColorStop(1,"rgba(255,255,255,0)");
+  ctx.fillStyle=g;
+  ctx.beginPath();
+  if(ctx.roundRect){
+    ctx.roundRect(x,y,w,h,r);
+  }else{
+    ctx.rect(x,y,w,h);
+  }
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawFrame(mainCtx,effectCtx,maskCtx){
+  const W=mainCanvas.width,H=mainCanvas.height;
+  mainCtx.clearRect(0,0,W,H);
+  mainCtx.drawImage(sourceVideo,0,0,W,H);
+  if(!selection) return;
+
+  const x=Math.round(selection.x*W);
+  const y=Math.round(selection.y*H);
+  const w=Math.round(selection.w*W);
+  const h=Math.round(selection.h*H);
+  const f=Number(feather.value);
+  const s=Number(strength.value);
+
+  effectCanvas.width=W; effectCanvas.height=H;
+  effectCtx.clearRect(0,0,W,H);
+
+  if(mode.value==="blur"){
+    effectCtx.filter=`blur(${s}px)`;
+    effectCtx.drawImage(sourceVideo,0,0,W,H);
+    effectCtx.filter="none";
+  }else{
+    const scale=Math.max(4,Math.round(s/3));
+    const sw=Math.max(1,Math.round(W/scale));
+    const sh=Math.max(1,Math.round(H/scale));
+    const temp=document.createElement("canvas");
+    temp.width=sw; temp.height=sh;
+    const t=temp.getContext("2d");
+    t.imageSmoothingEnabled=false;
+    t.drawImage(sourceVideo,0,0,sw,sh);
+    effectCtx.imageSmoothingEnabled=false;
+    effectCtx.drawImage(temp,0,0,sw,sh,0,0,W,H);
+    effectCtx.imageSmoothingEnabled=true;
+  }
+
+  maskCanvas.width=W; maskCanvas.height=H;
+  roundedMask(maskCtx,x,y,w,h,Math.min(w,h)*0.12,f);
+
+  mainCtx.save();
+  mainCtx.globalCompositeOperation="source-over";
+  mainCtx.drawImage(effectCanvas,0,0);
+  mainCtx.globalCompositeOperation="destination-in";
+  mainCtx.drawImage(maskCanvas,0,0);
+  mainCtx.restore();
+
+  mainCtx.globalCompositeOperation="destination-over";
+  mainCtx.drawImage(sourceVideo,0,0,W,H);
+  mainCtx.globalCompositeOperation="source-over";
+}
+
+async function processVideo(){
+  if(!selection){alert("حدد المنطقة أولًا.");return;}
+  if(!window.MediaRecorder || !mainCanvas.captureStream){
+    alert("استخدم Google Chrome.");
+    return;
+  }
+
+  processButton.dataset.processing="true";
+  processButton.disabled=true;
+  clearButton.disabled=true;
+  videoInput.disabled=true;
+  selectionLayer.style.pointerEvents="none";
+  selectionBox.style.display="none";
+  progressArea.style.display="block";
+  resultArea.style.display="none";
+  progressBar.value=0;
+  statusText.textContent="جارٍ تجهيز الفيديو…";
+
+  mainCanvas.width=sourceVideo.videoWidth;
+  mainCanvas.height=sourceVideo.videoHeight;
+
+  const mainCtx=mainCanvas.getContext("2d");
+  const effectCtx=effectCanvas.getContext("2d");
+  const maskCtx=maskCanvas.getContext("2d");
+
+  const outStream=mainCanvas.captureStream(30);
+  let srcStream=null;
+  if(sourceVideo.captureStream) srcStream=sourceVideo.captureStream();
+  else if(sourceVideo.mozCaptureStream) srcStream=sourceVideo.mozCaptureStream();
+
+  if(srcStream){
+    srcStream.getAudioTracks().forEach(track=>outStream.addTrack(track));
+  }
+
+  const mime=chooseMime();
+  let recorder;
+  try{
+    recorder=new MediaRecorder(outStream,mime?{mimeType:mime,videoBitsPerSecond:7000000}:{videoBitsPerSecond:7000000});
+  }catch{
+    resetControls();
+    alert("تعذر بدء المعالجة.");
+    return;
+  }
+
+  const chunks=[];
+  recorder.ondataavailable=e=>{if(e.data?.size) chunks.push(e.data);};
+  recorder.onstop=()=>{
+    cancelAnimationFrame(rafId);
+    const blob=new Blob(chunks,{type:recorder.mimeType||"video/webm"});
+    if(resultUrl) URL.revokeObjectURL(resultUrl);
+    resultUrl=URL.createObjectURL(blob);
+    resultVideo.src=resultUrl;
+    downloadButton.href=resultUrl;
+    downloadButton.download="video-processed.webm";
+    resultArea.style.display="block";
+    progressBar.value=100;
+    statusText.textContent="اكتملت المعالجة.";
+    resetControls();
+  };
+
+  function loop(){
+    if(!sourceVideo.paused && !sourceVideo.ended && sourceVideo.readyState>=2){
+      drawFrame(mainCtx,effectCtx,maskCtx);
+      const p=(sourceVideo.currentTime/sourceVideo.duration)*100;
+      progressBar.value=Math.min(99,p);
+      statusText.textContent="جارٍ المعالجة: "+Math.floor(p)+"%";
+    }
+    if(!sourceVideo.ended) rafId=requestAnimationFrame(loop);
+  }
+
+  sourceVideo.pause();
+  sourceVideo.currentTime=0;
+
+  await new Promise(resolve=>{
+    if(sourceVideo.readyState>=2) resolve();
+    else sourceVideo.addEventListener("canplay",resolve,{once:true});
+  });
+
+  drawFrame(mainCtx,effectCtx,maskCtx);
+  recorder.start(1000);
+
+  sourceVideo.addEventListener("ended",()=>{
+    drawFrame(mainCtx,effectCtx,maskCtx);
+    setTimeout(()=>{if(recorder.state!=="inactive") recorder.stop();},300);
+  },{once:true});
+
+  try{
+    await sourceVideo.play();
+    loop();
+  }catch{
+    if(recorder.state!=="inactive") recorder.stop();
+    resetControls();
+    alert("اضغط تشغيل الفيديو مرة ثم أوقفه وجرّب مجددًا.");
+  }
+}
+
+function resetControls(){
+  processButton.dataset.processing="false";
+  processButton.disabled=!selection;
+  clearButton.disabled=false;
+  videoInput.disabled=false;
+  selectionLayer.style.pointerEvents="auto";
+  if(selection) selectionBox.style.display="block";
+}
+
+processButton.addEventListener("click",processVideo);
 </script>
-
 </body>
 </html>
